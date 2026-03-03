@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from './core/services/user.service';
 import { User } from './models/user.model';
 import { AsyncPipe } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -18,9 +19,11 @@ import { AsyncPipe } from '@angular/common';
 })
 export class AppComponent implements OnInit {
 
-  user$ = this.userService.getUser();
+  user$: Observable<User | null>;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {
+    this.user$ = this.userService.getUser();
+  }
 
   ngOnInit() {}
 }
