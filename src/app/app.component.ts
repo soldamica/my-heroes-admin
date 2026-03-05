@@ -1,29 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from './core/services/user.service';
-import { User } from './models/user.model';
+import { PlayerService } from './core/services/player.service';
+import { Player } from './models/player.model';
 import { AsyncPipe } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [AsyncPipe],
   template: `
-    <h1>User</h1>
+    <h1>Players:</h1>
 
-    @if (user$ | async; as user) {
-      <p>ID: {{ user.id }}</p>
-      <p>Name: {{ user.name }}</p>
+    @if (players$ | async; as players) {
+      @for (player of players; track player.id) {
+        <p>ID: {{ player.id }}</p>
+        <p>Name: {{ player.name }}</p>
+        <p>Firstname: {{ player.firstname }}</p>
+        <hr />
+      }
     }
   `
 })
+
 export class AppComponent implements OnInit {
 
-  user$: Observable<User | null>;
+  players$: Observable<Player[] | null> = of(null);
 
-  constructor(private userService: UserService) {
-    this.user$ = this.userService.getUser();
+  constructor(private playerService: PlayerService) {}
+
+  ngOnInit() {
+    this.players$ = this.playerService.getPlayers()
   }
-
-  ngOnInit() {}
 }
